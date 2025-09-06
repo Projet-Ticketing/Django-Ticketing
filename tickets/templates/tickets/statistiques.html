@@ -1,0 +1,152 @@
+<style>
+  .chart-same-size {
+    width: 100% !important;
+    max-width: 500px;
+    height: 300px !important;
+    margin: 0 auto;
+    display: block;
+  }
+</style>
+
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Statistiques de la plateforme</h2>
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <h5 class="card-title">Tickets total</h5>
+        <p class="display-6 fw-bold text-primary">{{ total_tickets }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <h5 class="card-title">Ouverts</h5>
+        <p class="display-6 fw-bold text-info">{{ tickets_ouverts }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <h5 class="card-title">Résolus</h5>
+        <p class="display-6 fw-bold text-success">{{ tickets_resolus }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card shadow-sm text-center">
+      <div class="card-body">
+        <h5 class="card-title">En attente</h5>
+        <p class="display-6 fw-bold text-warning">{{ tickets_en_attente }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Répartition des tickets par statut</h5>
+  <canvas id="statutChart" class="chart-same-size"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 mb-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Tickets par technicien</h5>
+  <canvas id="technicienChart" class="chart-same-size"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Évolution mensuelle des tickets</h5>
+        <canvas id="evolutionChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Statut Doughnut Chart
+const statutCtx = document.getElementById('statutChart').getContext('2d');
+new Chart(statutCtx, {
+  type: 'doughnut',
+  data: {
+    labels: {{ stat_labels|safe }},
+    datasets: [{
+      data: {{ stat_counts|safe }},
+      backgroundColor: [
+        'rgba(13,110,253,0.8)', // bleu
+        'rgba(255,193,7,0.8)',  // jaune
+        'rgba(25,135,84,0.8)'   // vert
+      ],
+      borderColor: [
+        'rgba(13,110,253,1)',
+        'rgba(255,193,7,1)',
+        'rgba(25,135,84,1)'
+      ],
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: { enabled: true }
+    },
+    layout: { padding: 20 }
+  }
+});
+
+// Technicien Bar Chart
+const techCtx = document.getElementById('technicienChart').getContext('2d');
+new Chart(techCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ tech_labels|safe }},
+        datasets: [{
+            label: 'Tickets',
+            data: {{ tech_counts|safe }},
+            backgroundColor: '#0d6efd',
+        }]
+    },
+    options: {
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+
+// Evolution Line Chart
+const evolCtx = document.getElementById('evolutionChart').getContext('2d');
+new Chart(evolCtx, {
+    type: 'line',
+    data: {
+        labels: {{ month_labels|safe }},
+        datasets: [{
+            label: 'Tickets créés',
+            data: {{ month_counts|safe }},
+            borderColor: '#198754',
+            backgroundColor: 'rgba(25,135,84,0.2)',
+            fill: true,
+            tension: 0.3
+        }]
+    },
+    options: {
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+</script>
+{% endblock %}

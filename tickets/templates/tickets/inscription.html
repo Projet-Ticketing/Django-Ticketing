@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Inscription</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="id_username" class="form-label">Nom d'utilisateur</label>
+      {{ form.username }}
+      <div class="form-text text-muted" style="font-size:0.95em; color:#7C3AED;">
+        Obligatoire. 150 caractères maximum. Lettres, chiffres et @/./+/-/_ uniquement.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="id_email" class="form-label">Adresse e-mail</label>
+      {{ form.email }}
+    </div>
+    <div class="mb-3">
+      <label for="id_mot_de_passe" class="form-label">Mot de passe</label>
+      {{ form.mot_de_passe }}
+    </div>
+    <button type="submit" class="btn btn-primary">S'inscrire</button>
+  </form>
+{% endblock %}

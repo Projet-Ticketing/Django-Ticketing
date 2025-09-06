@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Ticket : {{ ticket.titre }}</h2>
+  <p><strong>Statut :</strong> {{ ticket.statut }} | <strong>Priorité :</strong> {{ ticket.priorite }} | <strong>Entreprise :</strong> {{ ticket.entreprise }}</p>
+  <p><strong>Description :</strong> {{ ticket.description }}</p>
+  <hr>
+  <h3>Boîte de dialogue</h3>
+  <div class="mb-4">
+    {% for message in messages_ticket %}
+      <div class="border rounded p-2 mb-2 {% if message.auteur == user %}bg-light{% endif %}">
+        <strong>{{ message.auteur.username }}</strong> <span class="text-muted">({{ message.date_envoi|date:"d/m/Y H:i" }})</span><br>
+        {{ message.texte }}
+      </div>
+    {% empty %}
+      <p>Aucun message pour ce ticket.</p>
+    {% endfor %}
+  </div>
+  {% if ticket.statut != 'resolu' %}
+    <h4 style="color:#374151; font-weight:600; margin-bottom:0.7rem; font-size:1.12rem;">Ajouter un message</h4>
+  <form method="post" style="background:#fff; border-radius:0.7rem; border:1px solid #E5E7EB; padding:1rem 0.8rem; max-width:100%; box-shadow:0 1px 6px 0 rgba(124,58,237,0.04);">
+      {% csrf_token %}
+      <div class="mb-2">
+        {{ form.texte }}
+      </div>
+      <button type="submit" class="btn btn-primary w-100" style="font-weight:600; font-size:1.07rem; border-radius:0.7rem;">Envoyer</button>
+    </form>
+  {% else %}
+    <div class="alert alert-info mt-3">Ce ticket est clôturé, il n'est plus possible d'ajouter une réponse.</div>
+  {% endif %}
+  {% if request.user == ticket.technicien or is_admin or is_technicien %}
+    {% if ticket.statut != 'resolu' %}
+      <a href="/cloturer-ticket/{{ ticket.id }}/" class="btn btn-danger mt-3">Clôturer le ticket</a>
+    {% endif %}
+  {% endif %}
+  {% if is_admin or is_technicien %}
+    <a href="/espace-technicien/" class="btn btn-secondary mt-3">Retour à mon espace</a>
+  {% else %}
+    <a href="/espace/" class="btn btn-secondary mt-3">Retour à mon espace</a>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Espace technicien</h2>
+<form class="mb-3" method="get" action="">
+  <div class="input-group">
+    <input type="text" class="form-control" name="q" placeholder="Rechercher un ticket (numéro, titre, mot-clé)" value="{{ q|default:'' }}">
+    <button class="btn btn-outline-primary" type="submit">Rechercher</button>
+  </div>
+</form>
+{% if q %}
+  <h4>Résultats de la recherche</h4>
+  {% include "tickets/_table_tickets.html" with tickets=tickets_recherche %}
+{% else %}
+<ul class="nav nav-tabs mb-3" id="ongletsTickets" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="attente-tab" data-bs-toggle="tab" data-bs-target="#attente" type="button" role="tab">En attente</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="encours-tab" data-bs-toggle="tab" data-bs-target="#encours" type="button" role="tab">En cours</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="resolus-tab" data-bs-toggle="tab" data-bs-target="#resolus" type="button" role="tab">Résolus</button>
+  </li>
+</ul>
+<div class="tab-content" id="ongletsTicketsContent">
+  <div class="tab-pane fade show active" id="attente" role="tabpanel">
+    {% include "tickets/_table_tickets.html" with tickets=tickets_attente %}
+  </div>
+  <div class="tab-pane fade" id="encours" role="tabpanel">
+    {% include "tickets/_table_tickets.html" with tickets=tickets_en_cours %}
+  </div>
+  <div class="tab-pane fade" id="resolus" role="tabpanel">
+    {% include "tickets/_table_tickets.html" with tickets=tickets_resolus %}
+  </div>
+</div>
+{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

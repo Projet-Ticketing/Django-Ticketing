@@ -1,0 +1,29 @@
+# .gitignore pour Django
+
+# Fichiers Python
+*.pyc
+__pycache__/
+
+# Environnement virtuel
+env/
+venv/
+
+# Base de données
+*.sqlite3
+
+# Fichiers de migration
+*/migrations/*
+!*/migrations/__init__.py
+
+# Fichiers statiques générés
+/staticfiles/
+
+# Fichiers de configuration locaux
+*.env
+
+# Fichiers système
+.DS_Store
+
+# Autres
+.idea/
+.vscode/

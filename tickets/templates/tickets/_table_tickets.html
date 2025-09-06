@@ -1,0 +1,50 @@
+<table class="table">
+  <thead>
+    <tr>
+  <th>Numéro</th>
+  <th>Titre</th>
+  <th>Statut</th>
+  <th>Priorité</th>
+  <th>Date de création</th>
+  <th>Entreprise</th>
+  <th>Utilisateur</th>
+  <th>Tag</th>
+  <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ticket in tickets %}
+    <tr>
+      <td>{{ ticket.id }}</td>
+      <td><a href="/ticket/{{ ticket.id }}/">{{ ticket.titre }}</a></td>
+      <td>{{ ticket.statut }}</td>
+      <td>{{ ticket.priorite }}</td>
+      <td>{{ ticket.date_creation|date:"d/m/Y H:i" }}</td>
+      <td>{{ ticket.entreprise }}</td>
+      <td>{{ ticket.utilisateur.username }}</td>
+      <td>
+        {% if ticket.tag_reponse == "Réponse technicien" %}
+          <span class="badge bg-primary">Réponse technicien</span>
+        {% elif ticket.tag_reponse == "Réponse utilisateur" %}
+          <span class="badge bg-warning text-dark">Réponse utilisateur</span>
+        {% elif ticket.tag_reponse == "Nouveau" %}
+          <span class="badge bg-secondary">Nouveau</span>
+        {% else %}
+          <span class="badge bg-light text-dark">En attente</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if not ticket.technicien %}
+          <a href="/attribuer-ticket/{{ ticket.id }}/" class="btn btn-primary btn-sm">S'attribuer</a>
+        {% elif ticket.technicien == user %}
+          <span class="badge bg-success">Attribué à moi</span>
+        {% else %}
+          <span class="badge bg-success">Attribué</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="8">Aucun ticket.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>

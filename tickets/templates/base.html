@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticketd - Plateforme de gestion des tickets</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+      html, body {
+        height: 100%;
+      }
+      body {
+        min-height: 100vh;
+        background: linear-gradient(120deg, #f4f8fb 0%, #e0e7ff 100%);
+        display: flex;
+        flex-direction: column;
+      }
+      .container {
+        flex: 1 0 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .main-content {
+        background: #fff;
+        border-radius: 1rem;
+        box-shadow: 0 2px 16px rgba(44,62,80,0.07);
+        padding: 2rem;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+        flex: 1 0 auto;
+      }
+      .header-bar {
+        width: 100%;
+        background: #fff;
+        color: #24292F;
+        border-radius: 0 0 1rem 1rem;
+        box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+        padding: 0.5rem 0 0.5rem 0;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-logo-img {
+        height: 48px;
+        width: 48px;
+        margin-left: 2rem;
+        margin-right: 1rem;
+      }
+      .header-title-block {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+      }
+      .header-title {
+        font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 0;
+      }
+      .header-slogan {
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        font-size: 1rem;
+        color: #64748B;
+        opacity: 0.85;
+        margin-bottom: 0;
+      }
+      .header-actions {
+        margin-right: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .logout-btn, .stats-btn {
+        background: linear-gradient(90deg, #2563EB 0%, #7C3AED 100%);
+        color: #fff;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1.2rem;
+        font-size: 1rem;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+        transition: background 0.2s;
+        text-decoration: none;
+      }
+      .logout-btn:hover, .stats-btn:hover {
+        background: linear-gradient(90deg, #7C3AED 0%, #2563EB 100%);
+        color: #fff;
+      }
+      .footer {
+        background: #fff;
+        border-radius: 1rem 1rem 0 0;
+        box-shadow: 0 -2px 8px rgba(44,62,80,0.07);
+        text-align: center;
+        padding: 0.4rem 0 0.4rem 0;
+        color: #64748B;
+        font-size: 1rem;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        margin-top: auto;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        position: relative;
+        overflow: hidden;
+        border-top: 2px solid #e0e7ff;
+      }
+      .footer-icons {
+        display: flex;
+        gap: 1.2rem;
+        justify-content: center;
+        margin-bottom: 0.05rem;
+      }
+      .footer-icons a {
+        color: #2563EB;
+        font-size: 1.15rem;
+        transition: color 0.2s, transform 0.2s;
+      }
+      .footer-icons a:hover {
+        color: #7C3AED;
+        transform: scale(1.2);
+      }
+      .footer-text {
+        font-size: 0.95rem;
+        color: #64748B;
+        font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+        letter-spacing: 0.5px;
+      }
+      .footer-names {
+        font-size: 1rem;
+        color: #2563EB;
+        font-weight: 600;
+        font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+        margin-bottom: 0.05rem;
+        letter-spacing: 0.5px;
+        background: linear-gradient(90deg, #2563EB 0%, #7C3AED 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        color: transparent;
+      }
+      .footer-school {
+        font-size: 0.95rem;
+        color: #7C3AED;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        margin-bottom: 0.05rem;
+        opacity: 0.85;
+      }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+      <header class="header-bar">
+        <div style="display: flex; align-items: center;">
+          <img src="/static/tickets/logo_helper.svg" alt="Logo Ticketd" class="header-logo-img" />
+          <div class="header-title-block">
+            <span class="header-title">Ticketd</span>
+            <span class="header-slogan">Plateforme de gestion des tickets</span>
+          </div>
+        </div>
+        <div class="header-actions">
+      {% if request.user.is_authenticated and request.user.groups.all|length > 0 and request.user.groups.all.0.name == 'Administrateur' %}
+  <a href="/espace-technicien/" class="stats-btn"><i class="fa-solid fa-toolbox me-1"></i> Espace technicien</a>
+        <a href="/statistiques/" class="stats-btn"><i class="fa-solid fa-chart-column me-1"></i> Statistiques</a>
+      {% elif request.user.is_authenticated and request.user.groups.all|length > 0 and request.user.groups.all.0.name == 'Technicien' %}
+        <a href="/espace-technicien/" class="stats-btn"><i class="fa-solid fa-toolbox me-1"></i> Espace technicien</a>
+        <a href="/statistiques/" class="stats-btn"><i class="fa-solid fa-chart-column me-1"></i> Statistiques</a>
+      {% endif %}
+          {% if request.resolver_match.url_name == 'connexion' %}
+            <a href="/inscription/" class="logout-btn">Inscription</a>
+          {% elif request.resolver_match.url_name == 'inscription' %}
+            <a href="/connexion/" class="logout-btn">Déjà inscrit ? Se connecter</a>
+          {% else %}
+            <a href="/logout/" class="logout-btn">Déconnexion</a>
+          {% endif %}
+        </div>
+      </header>
+      <div class="main-content">
+        {% block content %}{% endblock %}
+      </div>
+      <footer class="footer">
+        <div class="footer-names">
+          Kylian Ascoet &amp; Sacha Veillon Rodrigues
+        </div>
+        <div class="footer-school">
+          BUT R&amp;T &mdash; IUT de Mont de Marsan
+        </div>
+        <div class="footer-icons">
+          <a href="https://www.djangoproject.com/" target="_blank" title="Django"><i class="fa-brands fa-python"></i></a>
+          <a href="https://github.com/" target="_blank" title="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="mailto:support@ticketd.com" title="Contact"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+        <div class="footer-text">
+          &copy; 2025 Ticketd &mdash; Plateforme fictive pour la gestion des tickets
+        </div>
+      </footer>
+    </div>
+</body>
+</html>
