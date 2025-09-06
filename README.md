@@ -29,7 +29,13 @@ Plateforme de gestion de tickets (helpdesk) en français, avec rôles multiples 
    ```bash
    python manage.py migrate
    ```
-5. Lancez le serveur :
+
+6. Créez un superutilisateur (admin) pour accéder à l’interface d’administration :
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+7. Lancez le serveur :
    ```bash
    python manage.py runserver
    ```
