@@ -25,13 +25,10 @@ Plateforme de gestion de tickets (helpdesk) en français, avec rôles multiples 
    ```bash
    pip install -r requirements.txt
    ```
-
 4. Appliquez les migrations :
    ```bash
    python manage.py migrate
    ```
-
-   Les groupes "Administrateur", "Technicien", "Utilisateur" et "Rapporteur" sont créés automatiquement lors des migrations grâce aux signaux Django.
 
 6. Créez un superutilisateur (admin) pour accéder à l’interface d’administration :
    ```bash

@@ -1,3 +1,8 @@
+"""
+Fichier views.py : vues principales du projet Ticketing
+Commentaires pédagogiques pour étudiant R&T
+Chaque vue est expliquée pour faciliter la compréhension du fonctionnement Django
+"""
 from django.shortcuts import render, redirect
 from django.db import models
 from django.contrib import messages
@@ -5,6 +10,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from django.utils import timezone
+import datetime
 from .models import Ticket, Message
 from .forms import FormulaireInscription
 from .forms_ticket import FormulaireTicket
@@ -13,13 +21,16 @@ from .forms_message import FormulaireMessage
 # Vue pour clôturer un ticket
 @login_required
 def cloturer_ticket(request, ticket_id):
+	"""
+	Permet à un technicien ou un administrateur de clôturer un ticket.
+	Change le statut et la date de résolution.
+	"""
 	user = request.user
 	ticket = Ticket.objects.get(id=ticket_id)
 	est_technicien = (ticket.technicien == user and user.groups.filter(name="Technicien").exists())
 	est_admin = user.groups.filter(name="Administrateur").exists()
 	if est_technicien or est_admin:
 		ticket.statut = "resolu"
-		from django.utils import timezone
 		ticket.date_resolution = timezone.now()
 		ticket.save()
 		messages.success(request, "Ticket clôturé avec succès !")
@@ -27,9 +38,13 @@ def cloturer_ticket(request, ticket_id):
 		messages.error(request, "Vous n'avez pas le droit de clôturer ce ticket.")
 	return redirect("detail_ticket", ticket_id=ticket.id)
 
-# Vue pour les techniciens : liste des tickets à traiter
+# Vue pour afficher l'espace technicien
 @login_required
 def espace_technicien(request):
+	"""
+	Affiche la liste des tickets à traiter pour les techniciens et administrateurs.
+	Permet la recherche et le filtrage.
+	"""
 	user = request.user
 	if not user.groups.filter(name__in=["Technicien", "Administrateur"]).exists():
 		messages.error(request, "Accès réservé aux techniciens.")
@@ -41,6 +56,7 @@ def espace_technicien(request):
 	tickets_en_cours = Ticket.objects.filter(technicien=user, statut="en_cours").order_by("date_creation")
 	tickets_resolus = Ticket.objects.filter(technicien=user, statut="resolu").order_by("date_creation")
 
+	# Recherche par numéro ou mot-clé
 	if q:
 		if q.isdigit():
 			tickets_attente = tickets_attente.filter(id=int(q))
@@ -65,6 +81,9 @@ def espace_technicien(request):
 
 	# Fonction pour déterminer le tag de réponse
 	def tag_reponse(ticket):
+		"""
+		Retourne le type de dernière réponse pour affichage (technicien, utilisateur, nouveau).
+		"""
 		dernier_message = ticket.messages.order_by('-date_envoi').first()
 		if not dernier_message:
 			return "Nouveau"
@@ -93,6 +112,10 @@ def espace_technicien(request):
 # Vue pour qu'un technicien s'attribue un ticket
 @login_required
 def attribuer_ticket(request, ticket_id):
+	"""
+	Permet à un technicien ou administrateur de s'attribuer un ticket non attribué.
+	Change le statut à "en cours".
+	"""
 	user = request.user
 	if not user.groups.filter(name__in=["Technicien", "Administrateur"]).exists():
 		messages.error(request, "Accès réservé aux techniciens.")
@@ -110,6 +133,10 @@ def attribuer_ticket(request, ticket_id):
 # Vue détail ticket avec boîte de dialogue
 @login_required
 def detail_ticket(request, ticket_id):
+	"""
+	Affiche le détail d'un ticket et la discussion associée.
+	Permet d'ajouter un message si l'utilisateur est concerné.
+	"""
 	ticket = Ticket.objects.get(id=ticket_id)
 	# Vérification que l'utilisateur est concerné
 	user = request.user
@@ -145,6 +172,10 @@ def detail_ticket(request, ticket_id):
 # Vue espace utilisateur
 @login_required
 def espace_utilisateur(request):
+	"""
+	Affiche l'espace utilisateur avec la liste de ses tickets.
+	Permet la recherche par numéro ou mot-clé.
+	"""
 	q = request.GET.get('q', '').strip()
 	tickets = request.user.tickets_utilisateur.all()
 	if q:
@@ -161,23 +192,34 @@ def espace_utilisateur(request):
 # Vue pour la création de ticket
 @login_required
 def creer_ticket(request):
-    if request.method == "POST":
-        form = FormulaireTicket(request.POST)
-        if form.is_valid():
-            ticket = form.save(commit=False)
-            ticket.utilisateur = request.user
-            ticket.save()
-            # Créer le premier message lié au ticket
-            message_texte = form.cleaned_data.get("message")
-            if message_texte:
-                Message.objects.create(ticket=ticket, auteur=request.user, texte=message_texte)
-            messages.success(request, "Ticket créé avec succès !")
-            return redirect("espace_utilisateur")
-    else:
-        form = FormulaireTicket()
-    return render(request, "tickets/creer_ticket.html", {"form": form})
+	"""
+	Permet à un utilisateur ou technicien de créer un ticket.
+	Enregistre le ticket et le premier message associé.
+	"""
+	user = request.user
+	if not user.groups.filter(name__in=["Utilisateur", "Technicien"]).exists():
+		messages.error(request, "Accès réservé aux utilisateurs et techniciens.")
+		return redirect("espace_utilisateur")
+	if request.method == "POST":
+		form = FormulaireTicket(request.POST)
+		if form.is_valid():
+			ticket = form.save(commit=False)
+			ticket.utilisateur = user
+			ticket.save()
+			# Créer le premier message lié au ticket
+			message_texte = form.cleaned_data.get("message")
+			if message_texte:
+				Message.objects.create(ticket=ticket, auteur=user, texte=message_texte)
+			messages.success(request, "Ticket créé avec succès !")
+			return redirect("espace_utilisateur")
+	else:
+		form = FormulaireTicket()
+	return render(request, "tickets/creer_ticket.html", {"form": form})
 
 def connexion(request):
+	"""
+	Vue de connexion utilisateur : vérifie les identifiants et redirige selon le groupe.
+	"""
 	if request.method == "POST":
 		username = request.POST.get("username")
 		password = request.POST.get("password")
@@ -196,6 +238,9 @@ def connexion(request):
 	return render(request, "tickets/connexion.html")
 
 def inscription(request):
+	"""
+	Vue d'inscription utilisateur : crée un nouveau compte et redirige vers la connexion.
+	"""
 	if request.method == "POST":
 		form = FormulaireInscription(request.POST)
 		if form.is_valid():
@@ -207,10 +252,17 @@ def inscription(request):
 	return render(request, "tickets/inscription.html", {"form": form})
 
 def deconnexion(request):
-    logout(request)
-    return redirect('connexion')
+	"""
+	Déconnecte l'utilisateur et le redirige vers la page de connexion.
+	"""
+	logout(request)
+	return redirect('connexion')
 
 def statistiques(request):
+	"""
+	Vue statistiques : affiche des indicateurs et graphiques sur les tickets.
+	Accessible uniquement aux techniciens et administrateurs.
+	"""
 	user = request.user
 	# Seuls admin et technicien peuvent accéder
 	if not user.groups.filter(name__in=["Administrateur", "Technicien"]).exists():
@@ -231,9 +283,6 @@ def statistiques(request):
 	tech_counts = [t["total"] for t in tickets_par_technicien]
 
 	# Données pour l'évolution mensuelle
-	from django.db.models.functions import TruncMonth
-	from django.utils import timezone
-	import datetime
 	now = timezone.now()
 	months = []
 	month_labels = []

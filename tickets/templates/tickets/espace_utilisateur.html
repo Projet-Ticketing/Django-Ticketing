@@ -1,42 +1,52 @@
+
 {% extends "base.html" %}
 {% block content %}
-  <h2>Mon espace</h2>
-  <a href="/creer-ticket/" class="btn btn-success mb-3">Créer un ticket</a>
-  <form class="mb-3" method="get" action="">
-    <div class="input-group">
-      <input type="text" class="form-control" name="q" placeholder="Rechercher un ticket (numéro, titre, mot-clé)">
-      <button class="btn btn-outline-primary" type="submit">Rechercher</button>
-    </div>
-  </form>
-  <h3>Mes tickets</h3>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Numéro</th>
-        <th>Titre</th>
-        <th>Statut</th>
-        <th>Priorité</th>
-        <th>Date de création</th>
-        <th>Entreprise</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for ticket in tickets %}
-      <tr>
-        <td>{{ ticket.id }}</td>
-        <td><a href="/ticket/{{ ticket.id }}/">{{ ticket.titre }}</a></td>
-        <td>{{ ticket.statut }}</td>
-        <td>
-          <span class="badge {% if ticket.priorite == 'haute' %}bg-danger{% elif ticket.priorite == 'moyenne' %}bg-warning{% else %}bg-light text-dark{% endif %}">
-            {{ ticket.priorite|capfirst }}
-          </span>
-        </td>
-        <td>{{ ticket.date_creation|date:"d/m/Y H:i" }}</td>
-        <td>{{ ticket.entreprise }}</td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="6">Aucun ticket pour le moment.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+
+<!-- Titre de la page utilisateur -->
+<h2>Mon espace</h2>
+
+<!-- Bouton pour créer un nouveau ticket -->
+<a href="/creer-ticket/" class="btn btn-success mb-3">Créer un ticket</a>
+
+<!-- Formulaire de recherche de tickets -->
+<form class="mb-3" method="get" action="">
+  <div class="input-group">
+    <input type="text" class="form-control" name="q" placeholder="Rechercher un ticket (numéro, titre, mot-clé)">
+    <button class="btn btn-outline-primary" type="submit">Rechercher</button>
+  </div>
+</form>
+
+<!-- Tableau des tickets de l'utilisateur -->
+<h3>Mes tickets</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Numéro</th>
+      <th>Titre</th>
+      <th>Statut</th>
+      <th>Priorité</th>
+      <th>Date de création</th>
+      <th>Entreprise</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ticket in tickets %}
+    <tr>
+      <td>{{ ticket.id }}</td>
+      <td><a href="/ticket/{{ ticket.id }}/">{{ ticket.titre }}</a></td>
+      <td>{{ ticket.statut }}</td>
+      <td>
+        <!-- Badge de priorité -->
+        <span class="badge {% if ticket.priorite == 'haute' %}bg-danger{% elif ticket.priorite == 'moyenne' %}bg-warning{% else %}bg-light text-dark{% endif %}">
+          {{ ticket.priorite|capfirst }}
+        </span>
+      </td>
+      <td>{{ ticket.date_creation|date:"d/m/Y H:i" }}</td>
+      <td>{{ ticket.entreprise }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">Aucun ticket pour le moment.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

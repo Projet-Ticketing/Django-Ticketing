@@ -7,81 +7,94 @@
     display: block;
   }
 </style>
-
 {% extends "base.html" %}
 {% block content %}
-<h2 class="mb-4">Statistiques de la plateforme</h2>
-<div class="row g-4 mb-4">
-  <div class="col-md-3">
-    <div class="card shadow-sm text-center">
-      <div class="card-body">
-        <h5 class="card-title">Tickets total</h5>
-        <p class="display-6 fw-bold text-primary">{{ total_tickets }}</p>
+
+<!-- Container principal pour les statistiques -->
+<div class="container mt-5">
+  <!-- Titre de la page -->
+  <h2>Statistiques</h2>
+
+  <!-- Cartes de statistiques principales -->
+  <div class="row mb-4">
+    <!-- Tickets ouverts -->
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Tickets ouverts</h5>
+          <p class="card-text display-6">{{ stats.ouverts }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Tickets fermés -->
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Tickets fermés</h5>
+          <p class="card-text display-6">{{ stats.fermes }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Tickets en attente -->
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Tickets en attente</h5>
+          <p class="card-text display-6">{{ stats.attente }}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Tickets urgents -->
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Tickets urgents</h5>
+          <p class="card-text display-6">{{ stats.urgents }}</p>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="card shadow-sm text-center">
-      <div class="card-body">
-        <h5 class="card-title">Ouverts</h5>
-        <p class="display-6 fw-bold text-info">{{ tickets_ouverts }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card shadow-sm text-center">
-      <div class="card-body">
-        <h5 class="card-title">Résolus</h5>
-        <p class="display-6 fw-bold text-success">{{ tickets_resolus }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card shadow-sm text-center">
-      <div class="card-body">
-        <h5 class="card-title">En attente</h5>
-        <p class="display-6 fw-bold text-warning">{{ tickets_en_attente }}</p>
+
+  <!-- Graphique d'évolution des tickets -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Évolution des tickets</h5>
+          <canvas id="ticketsChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="row mt-5">
-  <div class="col-md-6 mb-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">Répartition des tickets par statut</h5>
-  <canvas id="statutChart" class="chart-same-size"></canvas>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6 mb-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">Tickets par technicien</h5>
-  <canvas id="technicienChart" class="chart-same-size"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row mt-4">
-  <div class="col-md-12">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h5 class="card-title">Évolution mensuelle des tickets</h5>
-        <canvas id="evolutionChart"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
+<!-- Script Chart.js pour le graphique -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Statut Doughnut Chart
-const statutCtx = document.getElementById('statutChart').getContext('2d');
-new Chart(statutCtx, {
-  type: 'doughnut',
+  var ctx = document.getElementById('ticketsChart').getContext('2d');
+  var ticketsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ stats.labels|safe }},
+      datasets: [{
+        label: 'Tickets',
+        data: {{ stats.data|safe }},
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}
   data: {
     labels: {{ stat_labels|safe }},
     datasets: [{

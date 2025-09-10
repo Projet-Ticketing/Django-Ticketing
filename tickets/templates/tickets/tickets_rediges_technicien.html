@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Mes tickets rédigés</h2>
+{% if tickets %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Titre</th>
+        <th>Statut</th>
+        <th>Date de création</th>
+        <th>Entreprise</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ticket in tickets %}
+      <tr>
+        <td>{{ ticket.id }}</td>
+        <td>{{ ticket.titre }}</td>
+        <td>{{ ticket.statut }}</td>
+        <td>{{ ticket.date_creation|date:"d/m/Y H:i" }}</td>
+        <td>{{ ticket.entreprise }}</td>
+        <td><a href="{% url 'detail_ticket' ticket.id %}" class="btn btn-sm btn-primary">Voir</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>Aucun ticket rédigé.</p>
+{% endif %}
+{% endblock %}

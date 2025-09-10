@@ -1,134 +1,177 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-  .creer-ticket-card {
-    background: linear-gradient(120deg, #F8FAFC 80%, #E0E7FF 100%);
-    box-shadow: 0 6px 32px 0 rgba(124,58,237,0.10), 0 1.5px 6px 0 rgba(37,99,235,0.10);
-    border-radius: 1.5rem;
-    max-width: 860px;
-    width: 100%;
+  .creer-ticket-simple {
+    max-width: 900px;
     margin: 1.2rem auto;
-    padding: 1.2rem 1.2rem 1rem 1.2rem;
     font-family: 'Inter', 'Poppins', 'Segoe UI', sans-serif;
+    padding: 0;
   }
-  .creer-ticket-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #7C3AED;
-    text-align: center;
-    margin-bottom: 0.7rem;
-    letter-spacing: 1px;
+  .creer-ticket-form {
     display: flex;
-    align-items: center;
+    gap: 1.5rem;
     justify-content: center;
+    .creer-ticket-simple {
+      max-width: 900px;
+      margin: 1.2rem auto;
+      font-family: 'Inter', 'Poppins', 'Segoe UI', sans-serif;
+      padding: 0;
+    }
+    .creer-ticket-form {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 0.2rem;
+      align-items: flex-start;
+    }
+    .creer-ticket-col {
+      flex: 1 1 340px;
+      min-width: 280px;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: #FAFAFA;
+      border-radius: 0.7rem;
+      padding: 1rem 1.2rem;
+      box-sizing: border-box;
+      box-shadow: 0 2px 8px 0 rgba(124,58,237,0.04);
+    }
+    .creer-ticket-form label {
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 0.05rem;
+      font-size: 0.95rem;
+    }
+    .creer-ticket-form .form-control, .creer-ticket-form .form-select {
+      border-radius: 0.3rem;
+      border: 1px solid #CCC;
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+      background: #FAFAFA;
+      box-shadow: none;
+      width: 100%;
+      min-width: 180px;
+      max-width: 100%;
+      display: block;
+    }
+    .creer-ticket-form .form-control:focus, .creer-ticket-form .form-select:focus {
+      border-color: #7C3AED;
+      outline: none;
+    }
+    .creer-ticket-form .stats-btn {
+      background: #7C3AED;
+      color: #fff;
+      border-radius: 0.7rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 0.5rem 0;
+      border: none;
+      margin-top: 0.7rem;
+      width: 100%;
+      min-width: 180px;
+      max-width: 100%;
+      box-shadow: none;
+      transition: background 0.2s;
+      display: block;
+    }
+    .creer-ticket-form .stats-btn:hover {
+      background: #2563EB;
+      color: #fff;
+    }
+    .creer-ticket-actions {
+      width: 100%;
+      display: flex;
+      gap: 0.7rem;
+      margin-top: 0.7rem;
+    }
+    @media (max-width: 900px) {
+      .creer-ticket-form {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .creer-ticket-col {
+        max-width: 100%;
+        min-width: 0;
+        padding: 0.7rem 0.5rem;
+      }
+    }
+  .creer-ticket-actions {
+    width: 100%;
+    display: flex;
     gap: 0.7rem;
-  }
-  .creer-ticket-title i {
-    color: #2563EB;
-    font-size: 2.2rem;
-    margin-right: 0.2rem;
-  }
-  .creer-ticket-form label {
-    font-weight: 600;
-    color: #2563EB;
-    margin-bottom: 0.15rem;
-    font-size: 1.05rem;
-  }
-  .creer-ticket-form .form-control, .creer-ticket-form .form-select {
-    border-radius: 0.7rem;
-    border: 1.5px solid #7C3AED;
-    font-size: 1.05rem;
-    margin-bottom: 0.7rem;
-    background: #F3F4F6;
-    transition: border-color 0.2s;
-  }
-  .creer-ticket-form .form-control:focus, .creer-ticket-form .form-select:focus {
-    border-color: #2563EB;
-    box-shadow: 0 0 0 2px #7C3AED33;
-  }
-  .creer-ticket-form .stats-btn {
-    background: linear-gradient(90deg, #7C3AED 0%, #2563EB 100%);
-    color: #fff;
-    border-radius: 1.2rem;
-    font-size: 1.13rem;
-    font-weight: 700;
-    padding: 0.7rem 0;
-    box-shadow: 0 2px 8px 0 rgba(124,58,237,0.10);
-    border: none;
-    transition: background 0.2s, transform 0.2s;
     margin-top: 0.7rem;
   }
-  .creer-ticket-form .stats-btn:hover {
-    background: linear-gradient(90deg, #2563EB 0%, #7C3AED 100%);
-    transform: scale(1.04);
-    color: #fff;
+  @media (max-width: 900px) {
+    .creer-ticket-form {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .creer-ticket-col {
+      max-width: 100%;
+    }
+    .creer-ticket-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
   }
 </style>
-<div class="creer-ticket-card">
-  <div class="creer-ticket-title">
-    <i class="fa-solid fa-ticket"></i>
-    Créer un ticket
-  </div>
-  <form method="post" class="creer-ticket-form">
+<div class="creer-ticket-simple">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-info" style="margin-bottom:0.7rem;">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+  <!-- Formulaire de création de ticket -->
+  <form method="post" class="creer-ticket-form" style="margin-top:0;"> 
     {% csrf_token %}
-    <div class="row" style="display:flex; gap:1.2rem; justify-content:center;">
-      <div class="col-client" style="flex:1; min-width:220px; background:#F8FAFC; border-radius:1rem; border:1.5px solid #E0E7FF; padding:1rem 1rem 0.7rem 1rem; box-shadow:0 1px 6px 0 rgba(124,58,237,0.07);">
-        <div style="font-weight:700; color:#7C3AED; margin-bottom:0.7rem; font-size:1.15rem; display:flex; align-items:center; gap:0.5rem;">
-          <i class="fa-solid fa-user"></i> Informations client
-        </div>
-        {{ form.nom_demandeur.label_tag }}
-        {{ form.nom_demandeur }}
-        {{ form.email_demandeur.label_tag }}
-        {{ form.email_demandeur }}
-        {{ form.entreprise.label_tag }}
-        {{ form.entreprise }}
-        <div class="form-group">
-          {{ form.telephone_demandeur.label_tag }}
-          {{ form.telephone_demandeur }}
-        </div>
+    <div class="creer-ticket-col">
+      {{ form.nom_demandeur.label_tag }}
+      {{ form.nom_demandeur }}
+      {{ form.email_demandeur.label_tag }}
+      {{ form.email_demandeur }}
+      {{ form.entreprise.label_tag }}
+      {{ form.entreprise }}
+      {{ form.telephone_demandeur.label_tag }}
+      {{ form.telephone_demandeur }}
+    </div>
+    <div class="creer-ticket-col">
+      {{ form.titre.label_tag }}
+      {{ form.titre }}
+      {{ form.objet.label_tag }}
+      {{ form.objet }}
+      {{ form.message.label_tag }}
+      {{ form.message }}
+      <div class="form-group">
+        <label for="priorite">Priorité</label>
+        <select id="priorite" name="priorite" class="form-control">
+          <option value="haute">Haute</option>
+          <option value="moyenne">Moyenne</option>
+          <option value="basse">Basse</option>
+        </select>
       </div>
-      <div style="width:2px; background:#E0E7FF; border-radius:2px; margin:0 0.5rem;"></div>
-      <div class="col-ticket" style="flex:1; min-width:220px; background:#F8FAFC; border-radius:1rem; border:1.5px solid #E0E7FF; padding:1rem 1rem 0.7rem 1rem; box-shadow:0 1px 6px 0 rgba(124,58,237,0.07);">
-        <div style="font-weight:700; color:#7C3AED; margin-bottom:0.7rem; font-size:1.15rem; display:flex; align-items:center; gap:0.5rem;">
-          <i class="fa-solid fa-ticket"></i> Informations ticket
-        </div>
-        {{ form.titre.label_tag }}
-        {{ form.titre }}
-        {{ form.objet.label_tag }}
-        {{ form.objet }}
-        {{ form.message.label_tag }}
-        {{ form.message }}
-        <div class="form-group">
-          <label for="priorite">Priorité</label>
-          <select id="priorite" name="priorite" class="form-control">
-            <option value="haute">Haute</option>
-            <option value="moyenne">Moyenne</option>
-            <option value="basse">Basse</option>
-          </select>
-        </div>
-        <div id="priorite-indicateur" class="badge bg-light text-dark mt-2">
-          Priorité sélectionnée
-        </div>
+      <div id="priorite-indicateur" class="badge bg-light text-dark mt-2" style="border-radius:0.3rem; font-size:0.95rem;">
+        Priorité sélectionnée
       </div>
     </div>
-    <button type="submit" class="stats-btn w-100"><i class="fa-solid fa-paper-plane me-2"></i>Créer le ticket</button>
-    <button type="button" class="stats-btn w-100 mt-3" onclick="history.back()">
+  </form>
+  <div class="creer-ticket-actions" style="width:100%; display:flex; gap:1rem; margin-top:0.7rem;">
+    <button type="button" class="stats-btn" style="flex:1; margin-bottom:0.5rem; background:#EEE; color:#333;" onclick="history.back()">
       <i class="fa-solid fa-arrow-left me-2"></i>Retour
     </button>
+    <button type="submit" form="" class="stats-btn" style="flex:1; margin-bottom:0.5rem;"><i class="fa-solid fa-paper-plane me-2"></i>Créer le ticket</button>
+  </div>
   </form>
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const prioriteSelect = document.getElementById("priorite");
     const prioriteIndicateur = document.getElementById("priorite-indicateur");
-
     function updatePrioriteCouleur() {
       const priorite = prioriteSelect.value;
-
-      // Réinitialiser les classes
       prioriteIndicateur.className = "badge mt-2";
-
-      // Appliquer la couleur en fonction de la priorité
       if (priorite === "haute") {
         prioriteIndicateur.classList.add("bg-danger");
         prioriteIndicateur.textContent = "Priorité : Haute";
@@ -140,11 +183,7 @@
         prioriteIndicateur.textContent = "Priorité : Basse";
       }
     }
-
-    // Mettre à jour la couleur au chargement initial
     updatePrioriteCouleur();
-
-    // Écouter les changements dans le champ de priorité
     prioriteSelect.addEventListener("change", updatePrioriteCouleur);
   });
 </script>
