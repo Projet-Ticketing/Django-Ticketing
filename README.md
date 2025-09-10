@@ -30,7 +30,7 @@ Plateforme de gestion de tickets (helpdesk) en français, avec rôles multiples 
    python manage.py migrate
    ```
 
-### 6. Créer un superutilisateur (compte admin)
+### Créer un superutilisateur (compte admin)
 Ce compte permet d'accéder à l'interface d'administration Django :
 ```bash
 python manage.py createsuperuser
