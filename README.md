@@ -10,35 +10,79 @@ Plateforme de gestion de tickets (helpdesk) en français, avec rôles multiples 
 - Interface responsive et professionnelle
 - Peuplement de données de démonstration
 
-## Installation
-1. Clonez le dépôt :
+## Procédure d'installation et de lancement (débutant)
+
+### 1. Prérequis
+Assurez-vous d'avoir installé :
+- **Python 3.10 ou plus** (téléchargeable sur https://www.python.org)
+- **Git** (téléchargeable sur https://git-scm.com)
+
+### 2. Cloner le projet
+Ouvrez un terminal et tapez :
+```bash
+git clone https://github.com/Projet-Ticketing/Django-Ticketing.git
+cd Django-Ticketing
+```
+
+### 3. Créer un environnement virtuel Python
+Cela permet d'isoler les dépendances du projet :
+```bash
+python3 -m venv env
+```
+Activez l'environnement virtuel :
+- Sur **Mac/Linux** :
    ```bash
-   git clone https://github.com/Projet-Ticketing/Django-Ticketing.git
-   cd Django-Ticketing
-   ```
-2. Créez un environnement virtuel :
-   ```bash
-   python3 -m venv env
    source env/bin/activate
    ```
-3. Installez les dépendances :
+- Sur **Windows** :
    ```bash
-   pip install -r requirements.txt
+   .\env\Scripts\activate
    ```
-4. Appliquez les migrations :
-   ```bash
-   python manage.py migrate
-   ```
+Vous devriez voir `(env)` devant la ligne de commande.
 
-6. Créez un superutilisateur (admin) pour accéder à l’interface d’administration :
-   ```bash
-   python manage.py createsuperuser
-   ```
+### 4. Installer les dépendances Python
+Installez tous les modules nécessaires :
+```bash
+pip install -r requirements.txt
+```
+Si vous avez une erreur, vérifiez que l'environnement virtuel est bien activé.
 
-7. Lancez le serveur :
-   ```bash
-   python manage.py runserver
-   ```
+### 5. Appliquer les migrations (préparer la base de données)
+```bash
+python manage.py migrate
+```
+
+### 6. Créer un superutilisateur (compte admin)
+Ce compte permet d'accéder à l'interface d'administration Django :
+```bash
+python manage.py createsuperuser
+```
+Suivez les instructions (nom d'utilisateur, email, mot de passe).
+
+### 7. Lancer le serveur de développement
+```bash
+python manage.py runserver
+```
+Le site sera accessible à l'adresse http://127.0.0.1:8000 dans votre navigateur.
+
+### 8. Peupler la base avec des données de démonstration (optionnel)
+Pour tester avec des exemples :
+```bash
+python manage.py peuplement_demo
+```
+
+### 9. Utilisation du site
+- Rendez-vous sur la page d'accueil pour vous inscrire ou vous connecter.
+- Selon votre rôle, accédez à l'espace utilisateur ou technicien.
+- Créez, consultez et échangez sur les tickets.
+- Visualisez les statistiques et l'évolution des tickets.
+
+### 10. Conseils et dépannage
+- Si une commande ne fonctionne pas, vérifiez que vous êtes bien dans le dossier du projet et que l'environnement virtuel est activé.
+- Pour toute question, consultez la documentation Django : https://docs.djangoproject.com/fr/5.2/
+- En cas de problème de dépendance, relancez `pip install -r requirements.txt`.
+
+---
 
 ## Peuplement de données de démo
 Pour générer des utilisateurs, tickets et messages fictifs :
