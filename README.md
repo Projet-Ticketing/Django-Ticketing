@@ -1,16 +1,3 @@
-### Accéder à l'administration Django et gérer les techniciens
-
-Pour accéder à l'interface d'administration Django :
-- Ouvrez votre navigateur et allez sur : [http://localhost:8000/admin](http://localhost:8000/admin)
-- Connectez-vous avec le compte admin créé à l'étape 6 (`createsuperuser`).
-
-Pour ajouter un technicien :
-1. Dans l'admin, créez un nouvel utilisateur (menu Utilisateurs).
-2. Cliquez sur l'utilisateur créé pour modifier ses groupes.
-3. Ajoutez-le au groupe **Technicien**.
-4. Retirez-le du groupe **Utilisateur** si besoin (pour qu'il n'ait que le rôle technicien).
-
-Ainsi, le nouvel utilisateur aura accès à l'espace technicien et pourra gérer les tickets attribués.
 # Plateforme de Ticketing Django
 
 Plateforme de gestion de tickets (helpdesk) en français, avec rôles multiples (Administrateur, Technicien, Utilisateur, Rapporteur), statistiques, recherche, et interface moderne.
@@ -23,47 +10,25 @@ Plateforme de gestion de tickets (helpdesk) en français, avec rôles multiples 
 - Interface responsive et professionnelle
 - Peuplement de données de démonstration
 
-## Procédure d'installation et de lancement (débutant)
-
-### 1. Prérequis
-Assurez-vous d'avoir installé :
-- **Python 3.10 ou plus** (téléchargeable sur https://www.python.org)
-- **Git** (téléchargeable sur https://git-scm.com)
-
-### 2. Cloner le projet
-Ouvrez un terminal et tapez :
-```bash
-git clone https://github.com/Projet-Ticketing/Django-Ticketing.git
-cd Django-Ticketing
-```
-
-### 3. Créer un environnement virtuel Python
-Cela permet d'isoler les dépendances du projet :
-```bash
-python3 -m venv env
-```
-Activez l'environnement virtuel :
-- Sur **Mac/Linux** :
+## Installation
+1. Clonez le dépôt :
    ```bash
+   git clone https://github.com/Projet-Ticketing/Django-Ticketing.git
+   cd Django-Ticketing
+   ```
+2. Créez un environnement virtuel :
+   ```bash
+   python3 -m venv env
    source env/bin/activate
    ```
-- Sur **Windows** :
+3. Installez les dépendances :
    ```bash
-   .\env\Scripts\activate
+   pip install -r requirements.txt
    ```
-Vous devriez voir `(env)` devant la ligne de commande.
-
-### 4. Installer les dépendances Python
-Installez tous les modules nécessaires :
-```bash
-pip install -r requirements.txt
-```
-Si vous avez une erreur, vérifiez que l'environnement virtuel est bien activé.
-
-### 5. Appliquer les migrations (préparer la base de données)
-```bash
-python manage.py migrate
-```
+4. Appliquez les migrations :
+   ```bash
+   python manage.py migrate
+   ```
 
 ### 6. Créer un superutilisateur (compte admin)
 Ce compte permet d'accéder à l'interface d'administration Django :
