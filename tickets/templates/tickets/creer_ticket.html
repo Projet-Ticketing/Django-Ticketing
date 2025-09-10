@@ -71,7 +71,7 @@
   </div>
   <form method="post" class="creer-ticket-form">
     {% csrf_token %}
-  <div class="row" style="display:flex; gap:1.2rem; justify-content:center;">
+    <div class="row" style="display:flex; gap:1.2rem; justify-content:center;">
       <div class="col-client" style="flex:1; min-width:220px; background:#F8FAFC; border-radius:1rem; border:1.5px solid #E0E7FF; padding:1rem 1rem 0.7rem 1rem; box-shadow:0 1px 6px 0 rgba(124,58,237,0.07);">
         <div style="font-weight:700; color:#7C3AED; margin-bottom:0.7rem; font-size:1.15rem; display:flex; align-items:center; gap:0.5rem;">
           <i class="fa-solid fa-user"></i> Informations client
@@ -82,6 +82,10 @@
         {{ form.email_demandeur }}
         {{ form.entreprise.label_tag }}
         {{ form.entreprise }}
+        <div class="form-group">
+          {{ form.telephone_demandeur.label_tag }}
+          {{ form.telephone_demandeur }}
+        </div>
       </div>
       <div style="width:2px; background:#E0E7FF; border-radius:2px; margin:0 0.5rem;"></div>
       <div class="col-ticket" style="flex:1; min-width:220px; background:#F8FAFC; border-radius:1rem; border:1.5px solid #E0E7FF; padding:1rem 1rem 0.7rem 1rem; box-shadow:0 1px 6px 0 rgba(124,58,237,0.07);">
@@ -108,6 +112,9 @@
       </div>
     </div>
     <button type="submit" class="stats-btn w-100"><i class="fa-solid fa-paper-plane me-2"></i>Créer le ticket</button>
+    <button type="button" class="stats-btn w-100 mt-3" onclick="history.back()">
+      <i class="fa-solid fa-arrow-left me-2"></i>Retour
+    </button>
   </form>
 </div>
 <script>

@@ -2,6 +2,7 @@
 {% block content %}
   <h2>Ticket : {{ ticket.titre }}</h2>
   <p><strong>Statut :</strong> {{ ticket.statut }} | <strong>Priorité :</strong> {{ ticket.priorite }} | <strong>Entreprise :</strong> {{ ticket.entreprise }}</p>
+  <p><strong>Numéro de téléphone :</strong> {{ ticket.telephone_demandeur }}</p>
   <p><strong>Description :</strong> {{ ticket.description }}</p>
   <hr>
   <h3>Boîte de dialogue</h3>

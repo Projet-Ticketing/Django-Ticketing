@@ -21,6 +21,7 @@ class Ticket(models.Model):
 	entreprise = models.CharField(max_length=100)
 	nom_demandeur = models.CharField(max_length=100, blank=True, null=True)
 	email_demandeur = models.EmailField(blank=True, null=True)
+	telephone_demandeur = models.CharField(max_length=15, blank=False, null=False, default="0000000000")  # Nouveau champ
 
 	def __str__(self):
 		return f"{self.titre} ({self.entreprise})"

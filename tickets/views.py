@@ -161,21 +161,21 @@ def espace_utilisateur(request):
 # Vue pour la création de ticket
 @login_required
 def creer_ticket(request):
-	if request.method == "POST":
-		form = FormulaireTicket(request.POST)
-		if form.is_valid():
-			ticket = form.save(commit=False)
-			ticket.utilisateur = request.user
-			ticket.save()
-			# Créer le premier message lié au ticket
-			message_texte = form.cleaned_data.get("message")
-			if message_texte:
-				Message.objects.create(ticket=ticket, auteur=request.user, texte=message_texte)
-			messages.success(request, "Ticket créé avec succès !")
-			return redirect("espace_utilisateur")
-	else:
-		form = FormulaireTicket()
-	return render(request, "tickets/creer_ticket.html", {"form": form})
+    if request.method == "POST":
+        form = FormulaireTicket(request.POST)
+        if form.is_valid():
+            ticket = form.save(commit=False)
+            ticket.utilisateur = request.user
+            ticket.save()
+            # Créer le premier message lié au ticket
+            message_texte = form.cleaned_data.get("message")
+            if message_texte:
+                Message.objects.create(ticket=ticket, auteur=request.user, texte=message_texte)
+            messages.success(request, "Ticket créé avec succès !")
+            return redirect("espace_utilisateur")
+    else:
+        form = FormulaireTicket()
+    return render(request, "tickets/creer_ticket.html", {"form": form})
 
 def connexion(request):
 	if request.method == "POST":
