@@ -37,7 +37,7 @@ python manage.py createsuperuser
 ```
 Suivez les instructions (nom d'utilisateur, email, mot de passe).
 
-### 7. Lancer le serveur de développement
+### Lancer le serveur de développement
 ```bash
 python manage.py runserver
 ```
@@ -57,19 +57,19 @@ Pour ajouter un technicien :
 
 Ainsi, le nouvel utilisateur aura accès à l'espace technicien et pourra gérer les tickets attribués.
 
-### 8. Peupler la base avec des données de démonstration (optionnel)
+### Peupler la base avec des données de démonstration (optionnel)
 Pour tester avec des exemples :
 ```bash
 python manage.py peuplement_demo
 ```
 
-### 9. Utilisation du site
+### Utilisation du site
 - Rendez-vous sur la page d'accueil pour vous inscrire ou vous connecter.
 - Selon votre rôle, accédez à l'espace utilisateur ou technicien.
 - Créez, consultez et échangez sur les tickets.
 - Visualisez les statistiques et l'évolution des tickets.
 
-### 10. Conseils et dépannage
+### Conseils et dépannage
 - Si une commande ne fonctionne pas, vérifiez que vous êtes bien dans le dossier du projet et que l'environnement virtuel est activé.
 - Pour toute question, consultez la documentation Django : https://docs.djangoproject.com/fr/5.2/
 - En cas de problème de dépendance, relancez `pip install -r requirements.txt`.
