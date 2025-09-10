@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Espace technicien</h2>
+{% if user.is_authenticated and user.groups.all|length > 0 and user.groups.all.0.name == "Technicien" %}
+  <a href="{% url 'creer_ticket' %}" class="btn btn-success mb-3">Créer un ticket</a>
+  <a href="{% url 'espace_utilisateur' %}" class="btn btn-primary mb-3 ms-2">Mes tickets</a>
+{% endif %}
 <form class="mb-3" method="get" action="">
   <div class="input-group">
     <input type="text" class="form-control" name="q" placeholder="Rechercher un ticket (numéro, titre, mot-clé)" value="{{ q|default:'' }}">
