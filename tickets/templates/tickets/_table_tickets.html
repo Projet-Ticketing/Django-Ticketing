@@ -18,7 +18,11 @@
       <td>{{ ticket.id }}</td>
       <td><a href="/ticket/{{ ticket.id }}/">{{ ticket.titre }}</a></td>
       <td>{{ ticket.statut }}</td>
-      <td>{{ ticket.priorite }}</td>
+      <td>
+        <span class="badge {% if ticket.priorite == 'haute' %}bg-danger{% elif ticket.priorite == 'moyenne' %}bg-warning{% else %}bg-light text-dark{% endif %}">
+          {{ ticket.priorite|capfirst }}
+        </span>
+      </td>
       <td>{{ ticket.date_creation|date:"d/m/Y H:i" }}</td>
       <td>{{ ticket.entreprise }}</td>
       <td>{{ ticket.utilisateur.username }}</td>

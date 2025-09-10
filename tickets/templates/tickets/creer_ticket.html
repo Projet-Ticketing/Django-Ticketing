@@ -94,11 +94,51 @@
         {{ form.objet }}
         {{ form.message.label_tag }}
         {{ form.message }}
-        {{ form.priorite.label_tag }}
-        {{ form.priorite }}
+        <div class="form-group">
+          <label for="priorite">Priorité</label>
+          <select id="priorite" name="priorite" class="form-control">
+            <option value="haute">Haute</option>
+            <option value="moyenne">Moyenne</option>
+            <option value="basse">Basse</option>
+          </select>
+        </div>
+        <div id="priorite-indicateur" class="badge bg-light text-dark mt-2">
+          Priorité sélectionnée
+        </div>
       </div>
     </div>
     <button type="submit" class="stats-btn w-100"><i class="fa-solid fa-paper-plane me-2"></i>Créer le ticket</button>
   </form>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const prioriteSelect = document.getElementById("priorite");
+    const prioriteIndicateur = document.getElementById("priorite-indicateur");
+
+    function updatePrioriteCouleur() {
+      const priorite = prioriteSelect.value;
+
+      // Réinitialiser les classes
+      prioriteIndicateur.className = "badge mt-2";
+
+      // Appliquer la couleur en fonction de la priorité
+      if (priorite === "haute") {
+        prioriteIndicateur.classList.add("bg-danger");
+        prioriteIndicateur.textContent = "Priorité : Haute";
+      } else if (priorite === "moyenne") {
+        prioriteIndicateur.classList.add("bg-warning");
+        prioriteIndicateur.textContent = "Priorité : Moyenne";
+      } else {
+        prioriteIndicateur.classList.add("bg-light", "text-dark");
+        prioriteIndicateur.textContent = "Priorité : Basse";
+      }
+    }
+
+    // Mettre à jour la couleur au chargement initial
+    updatePrioriteCouleur();
+
+    // Écouter les changements dans le champ de priorité
+    prioriteSelect.addEventListener("change", updatePrioriteCouleur);
+  });
+</script>
 {% endblock %}
