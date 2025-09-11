@@ -1,26 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
 <style>
-  .creer-ticket-simple {
-    max-width: 900px;
-    margin: 1.2rem auto;
-    font-family: 'Inter', 'Poppins', 'Segoe UI', sans-serif;
-    padding: 0;
-  }
-  .creer-ticket-form {
+  .creer-ticket-actions {
+    width: 100%;
     display: flex;
-    gap: 1.5rem;
     justify-content: center;
-    .creer-ticket-simple {
-      max-width: 900px;
-      margin: 1.2rem auto;
-      font-family: 'Inter', 'Poppins', 'Segoe UI', sans-serif;
-      padding: 0;
-    }
+    gap: 1.5rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .creer-ticket-actions .stats-btn {
+    min-width: 180px;
+    max-width: 300px;
+  }
+  @media (max-width: 900px) {
     .creer-ticket-form {
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .creer-ticket-col {
+      max-width: 100%;
+    }
+    .creer-ticket-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .creer-ticket-actions {
+      flex-direction: column;
+      gap: 0.7rem;
+      align-items: stretch;
+    }
+  }
       flex-wrap: wrap;
       margin-bottom: 0.2rem;
       align-items: flex-start;
@@ -125,45 +136,44 @@
     {% endfor %}
   {% endif %}
   <!-- Formulaire de création de ticket -->
-  <form method="post" class="creer-ticket-form" style="margin-top:0;"> 
-    {% csrf_token %}
-    <div class="creer-ticket-col">
-      {{ form.nom_demandeur.label_tag }}
-      {{ form.nom_demandeur }}
-      {{ form.email_demandeur.label_tag }}
-      {{ form.email_demandeur }}
-      {{ form.entreprise.label_tag }}
-      {{ form.entreprise }}
-      {{ form.telephone_demandeur.label_tag }}
-      {{ form.telephone_demandeur }}
-    </div>
-    <div class="creer-ticket-col">
-      {{ form.titre.label_tag }}
-      {{ form.titre }}
-      {{ form.objet.label_tag }}
-      {{ form.objet }}
-      {{ form.message.label_tag }}
-      {{ form.message }}
-      <div class="form-group">
-        <label for="priorite">Priorité</label>
-        <select id="priorite" name="priorite" class="form-control">
-          <option value="haute">Haute</option>
-          <option value="moyenne">Moyenne</option>
-          <option value="basse">Basse</option>
-        </select>
+    <form method="post" class="creer-ticket-form" style="margin-top:0;"> 
+      {% csrf_token %}
+      <div class="creer-ticket-col">
+        {{ form.nom_demandeur.label_tag }}
+        {{ form.nom_demandeur }}
+        {{ form.email_demandeur.label_tag }}
+        {{ form.email_demandeur }}
+        {{ form.entreprise.label_tag }}
+        {{ form.entreprise }}
+        {{ form.telephone_demandeur.label_tag }}
+        {{ form.telephone_demandeur }}
       </div>
-      <div id="priorite-indicateur" class="badge bg-light text-dark mt-2" style="border-radius:0.3rem; font-size:0.95rem;">
-        Priorité sélectionnée
+      <div class="creer-ticket-col">
+        {{ form.titre.label_tag }}
+        {{ form.titre }}
+        {{ form.objet.label_tag }}
+        {{ form.objet }}
+        {{ form.message.label_tag }}
+        {{ form.message }}
+        <div class="form-group">
+          <label for="priorite">Priorité</label>
+          <select id="priorite" name="priorite" class="form-control">
+            <option value="haute">Haute</option>
+            <option value="moyenne">Moyenne</option>
+            <option value="basse">Basse</option>
+          </select>
+        </div>
+        <div id="priorite-indicateur" class="badge bg-light text-dark mt-2" style="border-radius:0.3rem; font-size:0.95rem;">
+          Priorité sélectionnée
+        </div>
       </div>
-    </div>
-  </form>
-  <div class="creer-ticket-actions" style="width:100%; display:flex; gap:1rem; margin-top:0.7rem;">
-    <button type="button" class="stats-btn" style="flex:1; margin-bottom:0.5rem; background:#EEE; color:#333;" onclick="history.back()">
-      <i class="fa-solid fa-arrow-left me-2"></i>Retour
-    </button>
-    <button type="submit" form="" class="stats-btn" style="flex:1; margin-bottom:0.5rem;"><i class="fa-solid fa-paper-plane me-2"></i>Créer le ticket</button>
-  </div>
-  </form>
+      <div class="creer-ticket-actions" style="width:100%; display:flex; gap:1rem; margin-top:0.7rem;">
+        <button type="button" class="stats-btn" style="flex:1; margin-bottom:0.5rem; background:#EEE; color:#333;" onclick="history.back()">
+          <i class="fa-solid fa-arrow-left me-2"></i>Retour
+        </button>
+        <button type="submit" class="stats-btn" style="flex:1; margin-bottom:0.5rem;"><i class="fa-solid fa-paper-plane me-2"></i>Créer le ticket</button>
+      </div>
+    </form>
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {

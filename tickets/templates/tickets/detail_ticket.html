@@ -1,98 +1,57 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Ticket : {{ ticket.titre }}</h2>
-  <p><strong>Statut :</strong> {{ ticket.statut }} | <strong>Priorité :</strong> {{ ticket.priorite }} | <strong>Entreprise :</strong> {{ ticket.entreprise }}</p>
-  <p><strong>Numéro de téléphone :</strong> {{ ticket.telephone_demandeur }}</p>
-  <p><strong>Description :</strong> {{ ticket.description }}</p>
-  <hr>
-  <h3>Boîte de dialogue</h3>
-  <div class="mb-4">
-    {% for message in messages_ticket %}
-      <div class="border rounded p-2 mb-2 {% if message.auteur == user %}bg-light{% endif %}">
-        <strong>{{ message.auteur.username }}</strong> <span class="text-muted">({{ message.date_envoi|date:"d/m/Y H:i" }})</span><br>
-        {{ message.texte }}
-      </div>
-    {% empty %}
-      <p>Aucun message pour ce ticket.</p>
-    {% endfor %}
-  </div>
-  {% if ticket.statut != 'resolu' %}
-    <h4 style="color:#374151; font-weight:600; margin-bottom:0.7rem; font-size:1.12rem;">Ajouter un message</h4>
-  <form method="post" style="background:#fff; border-radius:0.7rem; border:1px solid #E5E7EB; padding:1rem 0.8rem; max-width:100%; box-shadow:0 1px 6px 0 rgba(124,58,237,0.04);">
-      {% csrf_token %}
-      <div class="mb-2">
-        {{ form.texte }}
-      </div>
-      <button type="submit" class="btn btn-primary w-100" style="font-weight:600; font-size:1.07rem; border-radius:0.7rem;">Envoyer</button>
-    </form>
-  {% else %}
-    <div class="alert alert-info mt-3">Ce ticket est clôturé, il n'est plus possible d'ajouter une réponse.</div>
-  {% endif %}
-  {% if request.user == ticket.technicien or is_admin or is_technicien %}
-    {% if ticket.statut != 'resolu' %}
-      <a href="/cloturer-ticket/{{ ticket.id }}/" class="btn btn-danger mt-3">Clôturer le ticket</a>
-    {% endif %}
-  {% endif %}
-  {% if is_admin or is_technicien %}
-    <a href="/espace-technicien/" class="btn btn-secondary mt-3">Retour à mon espace</a>
-  {% else %}
-    <a href="/espace/" class="btn btn-secondary mt-3">Retour à mon espace</a>
-  {% endif %}
-
-{% extends "base.html" %}
-{% block content %}
-
-<!-- Container principal pour le détail du ticket -->
-<div class="container mt-5">
-  <!-- Titre de la page -->
-  <h2>Détail du ticket</h2>
-
-  <!-- Carte d'information du ticket -->
-  <div class="card mb-4">
-    <div class="card-body">
-      <h5 class="card-title">{{ ticket.titre }}</h5>
-      <p class="card-text"><strong>Entreprise :</strong> {{ ticket.entreprise }}</p>
-      <p class="card-text"><strong>Catégorie :</strong> {{ ticket.categorie }}</p>
-      <p class="card-text"><strong>Priorité :</strong> 
-        <!-- Badge de priorité -->
-        <span class="badge {% if ticket.priorite == 'haute' %}bg-danger{% elif ticket.priorite == 'moyenne' %}bg-warning{% else %}bg-light text-dark{% endif %}">
-          {{ ticket.priorite|capfirst }}
-        </span>
-      </p>
-      <p class="card-text"><strong>Description :</strong> {{ ticket.description }}</p>
-      <p class="card-text"><strong>Date de création :</strong> {{ ticket.date_creation|date:"d/m/Y H:i" }}</p>
-      {% if ticket.fichier %}
-      <p class="card-text"><strong>Fichier joint :</strong> <a href="{{ ticket.fichier.url }}" target="_blank">Télécharger</a></p>
-      {% endif %}
-    </div>
-  </div>
-
-  <!-- Section des messages liés au ticket -->
-  <h4>Messages</h4>
-  <div class="mb-4">
-    {% for message in messages %}
-    <div class="card mb-2">
+  <div class="container mt-5">
+    <h2>Détail du ticket : {{ ticket.titre }}</h2>
+    <div class="card mb-4">
       <div class="card-body">
-        <p class="card-text">{{ message.contenu }}</p>
-        <p class="card-text"><small class="text-muted">Par {{ message.auteur }} le {{ message.date|date:"d/m/Y H:i" }}</small></p>
+        <p class="card-text"><strong>Statut :</strong> {{ ticket.statut }}</p>
+        <p class="card-text"><strong>Entreprise :</strong> {{ ticket.entreprise }}</p>
+        {% if ticket.categorie %}<p class="card-text"><strong>Catégorie :</strong> {{ ticket.categorie }}</p>{% endif %}
+        <p class="card-text"><strong>Priorité :</strong> 
+          <span class="badge {% if ticket.priorite == 'haute' %}bg-danger{% elif ticket.priorite == 'moyenne' %}bg-warning{% else %}bg-light text-dark{% endif %}">{{ ticket.priorite|capfirst }}</span>
+        </p>
+        <p class="card-text"><strong>Numéro de téléphone :</strong> {{ ticket.telephone_demandeur }}</p>
+        <p class="card-text"><strong>Description :</strong> {{ ticket.description }}</p>
+        <p class="card-text"><strong>Date de création :</strong> {{ ticket.date_creation|date:"d/m/Y H:i" }}</p>
+        {% if ticket.fichier %}
+        <p class="card-text"><strong>Fichier joint :</strong> <a href="{{ ticket.fichier.url }}" target="_blank">Télécharger</a></p>
+        {% endif %}
       </div>
     </div>
-    {% empty %}
-    <p>Aucun message pour ce ticket.</p>
-    {% endfor %}
-  </div>
-
-  <!-- Formulaire pour ajouter un message -->
-  <form method="post" class="mb-4">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label for="contenu" class="form-label">Ajouter un message</label>
-      <textarea class="form-control" id="contenu" name="contenu" rows="3" required></textarea>
+    <h4>Messages</h4>
+    <div class="mb-4">
+      {% for message in messages_ticket %}
+        <div class="card mb-2">
+          <div class="card-body">
+            <strong>{{ message.auteur.username }}</strong> <span class="text-muted">({{ message.date_envoi|date:"d/m/Y H:i" }})</span><br>
+            {{ message.texte }}
+          </div>
+        </div>
+      {% empty %}
+        <p>Aucun message pour ce ticket.</p>
+      {% endfor %}
     </div>
-    <button type="submit" class="btn btn-primary">Envoyer</button>
-  </form>
-
-  <!-- Bouton retour à l'espace utilisateur -->
-  <a href="{% url 'espace_utilisateur' %}" class="btn btn-secondary">Retour à l'espace utilisateur</a>
-</div>
+    {% if ticket.statut != 'resolu' %}
+      <h4 style="color:#374151; font-weight:600; margin-bottom:0.7rem; font-size:1.12rem;">Ajouter un message</h4>
+      <form method="post" style="background:#fff; border-radius:0.7rem; border:1px solid #E5E7EB; padding:1rem 0.8rem; max-width:100%; box-shadow:0 1px 6px 0 rgba(124,58,237,0.04);">
+        {% csrf_token %}
+        <div class="mb-2">
+          {{ form.texte }}
+        </div>
+        <button type="submit" class="btn btn-primary w-100" style="font-weight:600; font-size:1.07rem; border-radius:0.7rem;">Envoyer</button>
+      </form>
+    {% else %}
+      <div class="alert alert-info mt-3">Ce ticket est clôturé, il n'est plus possible d'ajouter une réponse.</div>
+    {% endif %}
+    {% if request.user == ticket.technicien or is_admin or is_technicien %}
+      {% if ticket.statut != 'resolu' %}
+        <a href="/cloturer-ticket/{{ ticket.id }}/" class="btn btn-danger mt-3">Clôturer le ticket</a>
+      {% endif %}
+    {% endif %}
+    {% if is_admin or is_technicien %}
+      <a href="/espace-technicien/" class="btn btn-secondary mt-3">Retour à mon espace</a>
+    {% else %}
+      <a href="/espace/" class="btn btn-secondary mt-3">Retour à mon espace</a>
+    {% endif %}
+  </div>
 {% endblock %}
