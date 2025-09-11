@@ -259,52 +259,51 @@ def deconnexion(request):
 	return redirect('connexion')
 
 def statistiques(request):
-	"""
-	Vue statistiques : affiche des indicateurs et graphiques sur les tickets.
-	Accessible uniquement aux techniciens et administrateurs.
-	"""
-	user = request.user
-	# Seuls admin et technicien peuvent accéder
-	if not user.groups.filter(name__in=["Administrateur", "Technicien"]).exists():
-		return redirect("espace_utilisateur")
-	total_tickets = Ticket.objects.count()
-	tickets_ouverts = Ticket.objects.filter(statut__in=["nouveau", "en_cours"]).count()
-	tickets_resolus = Ticket.objects.filter(statut="resolu").count()
-	tickets_en_attente = Ticket.objects.filter(statut="nouveau").count()
-	tickets_par_technicien = Ticket.objects.values("technicien__username").annotate(total=Count("id")).order_by("-total")
+    """
+    Vue statistiques : affiche des indicateurs et graphiques sur les tickets.
+    Accessible uniquement aux techniciens et administrateurs.
+    """
+    user = request.user
+    # Seuls admin et technicien peuvent accéder
+    if not user.groups.filter(name__in=["Administrateur", "Technicien"]).exists():
+        return redirect("espace_utilisateur")
 
-	# Données pour le graphique tickets par statut
-	statuts = ["nouveau", "en_cours", "resolu"]
-	stat_labels = ["Nouveau", "En cours", "Résolu"]
-	stat_counts = [Ticket.objects.filter(statut=s).count() for s in statuts]
+    # Calcul des statistiques
+    tickets_ouverts = Ticket.objects.filter(statut__in=["nouveau", "en_cours"]).count()
+    tickets_fermes = Ticket.objects.filter(statut="resolu").count()
+    tickets_attente = Ticket.objects.filter(statut="nouveau").count()
+    tickets_urgents = Ticket.objects.filter(priorite="haute").count()
 
-	# Données pour le graphique tickets par technicien
-	tech_labels = [t["technicien__username"] or "Non attribué" for t in tickets_par_technicien]
-	tech_counts = [t["total"] for t in tickets_par_technicien]
+    # Données pour le graphique tickets par statut
+    stat_labels = ["Ouverts", "Fermés", "En attente"]
+    stat_counts = [tickets_ouverts, tickets_fermes, tickets_attente]
 
-	# Données pour l'évolution mensuelle
-	now = timezone.now()
-	months = []
-	month_labels = []
-	month_counts = []
-	for i in range(11, -1, -1):
-		month = (now - datetime.timedelta(days=30*i)).replace(day=1)
-		months.append(month)
-		month_labels.append(month.strftime('%b %Y'))
-	for month in months:
-		count = Ticket.objects.filter(date_creation__year=month.year, date_creation__month=month.month).count()
-		month_counts.append(count)
+    # Données pour le graphique tickets par technicien
+    tickets_par_technicien = Ticket.objects.values("technicien__username").annotate(total=Count("id")).order_by("-total")
+    tech_labels = [t["technicien__username"] or "Non attribué" for t in tickets_par_technicien]
+    tech_counts = [t["total"] for t in tickets_par_technicien]
 
-	return render(request, "tickets/statistiques.html", {
-		"total_tickets": total_tickets,
-		"tickets_ouverts": tickets_ouverts,
-		"tickets_resolus": tickets_resolus,
-		"tickets_en_attente": tickets_en_attente,
-		"tickets_par_technicien": tickets_par_technicien,
-		"stat_labels": stat_labels,
-		"stat_counts": stat_counts,
-		"tech_labels": tech_labels,
-		"tech_counts": tech_counts,
-		"month_labels": month_labels,
-		"month_counts": month_counts,
-	})
+    # Données pour l'évolution mensuelle
+    now = timezone.now()
+    month_labels = []
+    month_counts = []
+    for i in range(11, -1, -1):
+        month = (now - datetime.timedelta(days=30 * i)).replace(day=1)
+        month_labels.append(month.strftime('%b %Y'))
+        count = Ticket.objects.filter(date_creation__year=month.year, date_creation__month=month.month).count()
+        month_counts.append(count)
+
+    return render(request, "tickets/statistiques.html", {
+        "stats": {
+            "ouverts": tickets_ouverts,
+            "fermes": tickets_fermes,
+            "attente": tickets_attente,
+            "urgents": tickets_urgents,
+        },
+        "stat_labels": stat_labels,
+        "stat_counts": stat_counts,
+        "tech_labels": tech_labels,
+        "tech_counts": tech_counts,
+        "month_labels": month_labels,
+        "month_counts": month_counts,
+    })
