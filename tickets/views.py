@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
 import datetime
@@ -45,6 +45,7 @@ def espace_technicien(request):
 	Affiche la liste des tickets à traiter pour les techniciens et administrateurs.
 	Permet la recherche et le filtrage.
 	"""
+	
 	user = request.user
 	if not user.groups.filter(name__in=["Technicien", "Administrateur"]).exists():
 		messages.error(request, "Accès réservé aux techniciens.")
@@ -65,17 +66,17 @@ def espace_technicien(request):
 		else:
 			tickets_attente = tickets_attente.filter(
 				models.Q(titre__icontains=q) |
-				models.Q(description__icontains=q) |
+				models.Q(objet__icontains=q) |  # Remplace description__icontains par objet__icontains
 				models.Q(entreprise__icontains=q)
 			)
 			tickets_en_cours = tickets_en_cours.filter(
 				models.Q(titre__icontains=q) |
-				models.Q(description__icontains=q) |
+				models.Q(objet__icontains=q) |  # Remplace description__icontains par objet__icontains
 				models.Q(entreprise__icontains=q)
 			)
 			tickets_resolus = tickets_resolus.filter(
 				models.Q(titre__icontains=q) |
-				models.Q(description__icontains=q) |
+				models.Q(objet__icontains=q) |  # Remplace description__icontains par objet__icontains
 				models.Q(entreprise__icontains=q)
 			)
 
