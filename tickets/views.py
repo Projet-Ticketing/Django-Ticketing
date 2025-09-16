@@ -3,7 +3,7 @@ Fichier views.py : vues principales du projet Ticketing
 Commentaires pédagogiques pour étudiant R&T
 Chaque vue est expliquée pour faciliter la compréhension du fonctionnement Django
 """
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -17,6 +17,7 @@ from .models import Ticket, Message
 from .forms import FormulaireInscription
 from .forms_ticket import FormulaireTicket
 from .forms_message import FormulaireMessage
+from django.contrib.auth.models import User
 
 # Vue pour clôturer un ticket
 @login_required
@@ -134,41 +135,18 @@ def attribuer_ticket(request, ticket_id):
 # Vue détail ticket avec boîte de dialogue
 @login_required
 def detail_ticket(request, ticket_id):
-	"""
-	Affiche le détail d'un ticket et la discussion associée.
-	Permet d'ajouter un message si l'utilisateur est concerné.
-	"""
-	ticket = Ticket.objects.get(id=ticket_id)
-	# Vérification que l'utilisateur est concerné
-	user = request.user
-	est_concerne = (user == ticket.utilisateur) or user.groups.filter(name__in=["Technicien", "Administrateur"]).exists()
-	if not est_concerne:
-		messages.error(request, "Vous n'avez pas accès à ce ticket.")
-		return redirect("espace_utilisateur")
-	messages_ticket = ticket.messages.order_by("date_envoi")
-	if request.method == "POST":
-		form = FormulaireMessage(request.POST)
-		if form.is_valid():
-			message = form.save(commit=False)
-			message.ticket = ticket
-			message.auteur = user
-			message.save()
-			return redirect("detail_ticket", ticket_id=ticket.id)
-	else:
-		form = FormulaireMessage()
-	is_admin = user.groups.filter(name="Administrateur").exists()
-	is_technicien = user.groups.filter(name="Technicien").exists()
-	return render(
-		request,
-		"tickets/detail_ticket.html",
-		{
-			"ticket": ticket,
-			"messages_ticket": messages_ticket,
-			"form": form,
-			"is_admin": is_admin,
-			"is_technicien": is_technicien,
-		}
-	)
+    """
+    Affiche le détail d'un ticket et la discussion associée.
+    Permet d'ajouter un message si l'utilisateur est concerné.
+    """
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    utilisateurs = User.objects.filter(groups__name__in=["Technicien", "Administrateur"])
+    is_admin_or_technicien = request.user.groups.filter(name__in=["Administrateur", "Technicien"]).exists()
+    return render(request, "tickets/detail_ticket.html", {
+        "ticket": ticket,
+        "utilisateurs": utilisateurs,
+        "is_admin_or_technicien": is_admin_or_technicien,
+    })
 
 # Vue espace utilisateur
 @login_required
@@ -308,3 +286,32 @@ def statistiques(request):
         "month_labels": month_labels,
         "month_counts": month_counts,
     })
+
+@login_required
+def reattribuer_ticket(request, ticket_id):
+    """
+    Réattribue un ticket à un autre technicien ou administrateur.
+    """
+    ticket = get_object_or_404(Ticket, id=ticket_id)
+    if request.method == "POST":
+        nouveau_technicien_id = request.POST.get("nouveau_technicien")
+        if not nouveau_technicien_id:
+            messages.error(request, "Veuillez sélectionner un utilisateur.")
+            return redirect("detail_ticket", ticket_id=ticket.id)
+
+        utilisateur = get_object_or_404(User, id=nouveau_technicien_id)
+
+        # Vérifie que l'utilisateur est un technicien ou administrateur
+        if not utilisateur.groups.filter(name__in=["Technicien", "Administrateur"]).exists():
+            messages.error(request, "L'utilisateur sélectionné n'est pas un technicien ou administrateur.")
+            return redirect("detail_ticket", ticket_id=ticket.id)
+
+        # Réattribue le ticket
+        ticket.technicien = utilisateur if utilisateur.groups.filter(name="Technicien").exists() else None
+        ticket.statut = "nouveau" if utilisateur.groups.filter(name="Administrateur").exists() else "en_cours"
+        ticket.save()
+
+        messages.success(request, f"Le ticket a été réattribué à {utilisateur.username}.")
+        return redirect("detail_ticket", ticket_id=ticket.id)
+
+    return redirect("detail_ticket", ticket_id=ticket.id)

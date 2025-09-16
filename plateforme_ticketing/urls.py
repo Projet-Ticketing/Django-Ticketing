@@ -31,4 +31,5 @@ urlpatterns = [
     path('cloturer-ticket/<int:ticket_id>/', views.cloturer_ticket, name='cloturer_ticket'),
     path('logout/', views.deconnexion, name='logout'),
     path('statistiques/', views.statistiques, name='statistiques'),
+    path('reattribuer-ticket/<int:ticket_id>/', views.reattribuer_ticket, name='reattribuer_ticket'),
 ]
