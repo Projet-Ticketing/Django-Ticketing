@@ -70,7 +70,7 @@ class Command(BaseCommand):
             date_creation = timezone.now() - datetime.timedelta(days=days_ago)
             ticket = Ticket.objects.create(
                 titre=fake.sentence(nb_words=6),
-                description=fake.text(max_nb_chars=120),
+                objet=fake.text(max_nb_chars=120),
                 statut=statut,
                 priorite=random.choice(priorites),
                 entreprise=random.choice(entreprises),
@@ -78,8 +78,11 @@ class Command(BaseCommand):
                 technicien=technicien,
                 nom_demandeur=utilisateur.username,
                 email_demandeur=utilisateur.email,
-                date_creation=date_creation
             )
+            # Si on veut fixer une date de création passée malgré auto_now_add,
+            # on l'assigne ensuite et on sauvegarde.
+            ticket.date_creation = date_creation
+            ticket.save(update_fields=['date_creation'])
             # Messages
             for _ in range(random.randint(1, 3)):
                 auteur = random.choice([utilisateur, technicien] if technicien else [utilisateur])
