@@ -92,6 +92,10 @@ Pour générer des utilisateurs, tickets et messages fictifs :
 ```bash
 python manage.py peuplement_demo
 ```
+Le peuplement va créer des utilisateurs et des tickets fictifs, pour vous connecter : 
+- Administrateur : login = admin ; password = admin
+- Technicien : login = tech1 ; password = test1234
+- Utilisateur : login = client1 ; password = test1234 
 
 ## Utilisation
 - Accédez à la page d’accueil pour vous connecter ou vous inscrire.
