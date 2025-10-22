@@ -10,6 +10,14 @@ Plateforme de gestion de tickets (helpdesk) en français, avec rôles multiples 
 - Interface responsive et professionnelle
 - Peuplement de données de démonstration
 
+## Commande simplifié et rapide
+   ```bash
+   python3 -m venv env
+   source env/bin/activate
+   pip install -r requirements.txt
+   env/bin/activate && python manage.py makemigrations tickets && python manage.py migrate && python manage.py createsuperuser && python manage.py peuplement_demo
+   ```
+
 ## Installation
 1. Clonez le dépôt :
    ```bash
