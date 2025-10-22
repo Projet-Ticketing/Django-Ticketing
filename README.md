@@ -12,6 +12,8 @@ Plateforme de gestion de tickets (helpdesk) en français, avec rôles multiples 
 
 ## Commande simplifié et rapide
    ```bash
+   git clone https://github.com/Projet-Ticketing/Django-Ticketing.git
+   cd Django-Ticketing
    python3 -m venv env
    source env/bin/activate
    pip install -r requirements.txt
