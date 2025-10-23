@@ -6,6 +6,12 @@
     margin: 0 auto;
     display: block;
   }
+  /* Nouvelle classe pour contrôler la hauteur du grand graphique */
+  .chart-evolution {
+    width: 100%;
+    height: 360px; /* hauteur fixe pour éviter étirement vertical */
+    max-height: 420px;
+  }
 </style>
 
 {% extends "base.html" %}
@@ -69,8 +75,21 @@
   <div class="col-md-12">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h5 class="card-title">Évolution mensuelle des tickets</h5>
-        <canvas id="evolutionChart"></canvas>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="card-title mb-0">Évolution des tickets</h5>
+          <div class="d-flex align-items-center">
+            <div class="me-3 text-end">
+                <div id="quickCount" class="display-6 fw-bold" style="color:#2196f3;">{{ tickets_this_month }}</div>
+                <div id="quickLabel" style="font-size:0.9rem;color:#666;">Ce mois</div>
+              </div>
+            <select id="periodSelect" class="form-select w-auto">
+              <option value="day">Derniers 30 jours</option>
+              <option value="month" selected>12 derniers mois</option>
+              <option value="year">5 dernières années</option>
+            </select>
+          </div>
+        </div>
+        <canvas id="evolutionChart" class="chart-evolution"></canvas>
       </div>
     </div>
   </div>
@@ -130,13 +149,34 @@ new Chart(techCtx, {
 
 // Evolution Line Chart
 const evolCtx = document.getElementById('evolutionChart').getContext('2d');
-new Chart(evolCtx, {
+// Créer un chart dynamique qui peut afficher jour/mois/année
+const datasets = {
+  day: {
+    labels: {{ day_labels|safe }},
+    data: {{ day_counts|safe }},
+    label: 'Tickets créés (jours)'
+  },
+  month: {
+    labels: {{ month_labels|safe }},
+    data: {{ month_counts|safe }},
+    label: 'Tickets créés (mois)'
+  },
+  year: {
+    labels: {{ year_labels|safe }},
+    data: {{ year_counts|safe }},
+    label: 'Tickets créés (années)'
+  }
+};
+
+let currentPeriod = document.getElementById('periodSelect').value;
+
+const evolChart = new Chart(evolCtx, {
     type: 'line',
     data: {
-        labels: {{ month_labels|safe }},
+        labels: datasets[currentPeriod].labels,
         datasets: [{
-            label: 'Tickets créés',
-            data: {{ month_counts|safe }},
+            label: datasets[currentPeriod].label,
+            data: datasets[currentPeriod].data,
             borderColor: '#198754',
             backgroundColor: 'rgba(25,135,84,0.2)',
             fill: true,
@@ -145,8 +185,38 @@ new Chart(evolCtx, {
     },
     options: {
         plugins: { legend: { position: 'bottom' } },
-        scales: { y: { beginAtZero: true } }
+        scales: { y: { beginAtZero: true } },
+        responsive: true,
+        maintainAspectRatio: false
     }
+});
+
+// Met à jour le graphique lorsque la sélection change
+document.getElementById('periodSelect').addEventListener('change', function(e) {
+  const p = e.target.value;
+  evolChart.data.labels = datasets[p].labels;
+  evolChart.data.datasets[0].data = datasets[p].data;
+  evolChart.data.datasets[0].label = datasets[p].label;
+  evolChart.update();
+  // Met à jour le compteur rapide affiché
+  if(p === 'day') {
+    document.getElementById('quickCount').innerText = {{ tickets_today }};
+    document.getElementById('quickLabel').innerText = "Aujourd'hui";
+  } else if(p === 'month') {
+    document.getElementById('quickCount').innerText = {{ tickets_this_month }};
+    document.getElementById('quickLabel').innerText = "Ce mois";
+  } else if(p === 'year') {
+    document.getElementById('quickCount').innerText = {{ tickets_this_year }};
+    document.getElementById('quickLabel').innerText = "Cette année";
+  }
+});
+
+// Initialisation du quickCount au chargement
+document.addEventListener('DOMContentLoaded', function(){
+  const sel = document.getElementById('periodSelect').value;
+  if(sel === 'day') document.getElementById('quickCount').innerText = {{ tickets_today }};
+  if(sel === 'month') document.getElementById('quickCount').innerText = {{ tickets_this_month }};
+  if(sel === 'year') document.getElementById('quickCount').innerText = {{ tickets_this_year }};
 });
 </script>
 

@@ -1,8 +1,3 @@
-"""
-Fichier views.py : vues principales du projet Ticketing
-Commentaires pédagogiques pour étudiant R&T
-Chaque vue est expliquée pour faciliter la compréhension du fonctionnement Django
-"""
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import models
 from django.contrib import messages
@@ -299,6 +294,30 @@ def statistiques(request):
         count = Ticket.objects.filter(date_creation__year=month.year, date_creation__month=month.month).count()
         month_counts.append(count)
 
+    # Données journalières (30 derniers jours)
+    day_labels = []
+    day_counts = []
+    for i in range(29, -1, -1):
+        day = (now - datetime.timedelta(days=i)).date()
+        day_labels.append(day.strftime('%d %b'))
+        count = Ticket.objects.filter(date_creation__date=day).count()
+        day_counts.append(count)
+
+    # Données annuelles (5 dernières années)
+    year_labels = []
+    year_counts = []
+    for i in range(4, -1, -1):
+        y = now.year - i
+        year_labels.append(str(y))
+        count = Ticket.objects.filter(date_creation__year=y).count()
+        year_counts.append(count)
+
+    # Compteurs rapides : aujourd'hui, ce mois, cette année
+    today_date = now.date()
+    tickets_today = Ticket.objects.filter(date_creation__date=today_date).count()
+    tickets_this_month = Ticket.objects.filter(date_creation__year=now.year, date_creation__month=now.month).count()
+    tickets_this_year = Ticket.objects.filter(date_creation__year=now.year).count()
+
     return render(request, "tickets/statistiques.html", {
         "stats": {
             "ouverts": tickets_ouverts,
@@ -312,6 +331,13 @@ def statistiques(request):
         "tech_counts": tech_counts,
         "month_labels": month_labels,
         "month_counts": month_counts,
+        "day_labels": day_labels,
+        "day_counts": day_counts,
+        "year_labels": year_labels,
+        "year_counts": year_counts,
+        "tickets_today": tickets_today,
+        "tickets_this_month": tickets_this_month,
+        "tickets_this_year": tickets_this_year,
     })
 
 @login_required
