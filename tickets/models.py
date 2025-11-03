@@ -1,6 +1,5 @@
 
 # Modèles de données pour l'application de ticketing
-# Fichier à destination d'un étudiant R&T : chaque champ et méthode est commenté pour faciliter la compréhension.
 
 from django.db import models
 
