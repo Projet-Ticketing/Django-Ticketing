@@ -1,6 +1,5 @@
 """
 Fichier apps.py : configuration de l'application tickets
-Commentaires pédagogiques pour étudiant R&T
 """
 from django.apps import AppConfig
 
