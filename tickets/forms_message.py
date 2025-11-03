@@ -1,6 +1,5 @@
 """
 Fichier forms_message.py : formulaire pour ajouter un message à un ticket
-Commentaires pédagogiques pour étudiant R&T
 """
 from django import forms
 from .models import Message
