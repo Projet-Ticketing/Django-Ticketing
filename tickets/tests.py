@@ -1,6 +1,5 @@
 """
 Fichier tests.py : tests unitaires pour l'application tickets
-Commentaires pédagogiques pour étudiant R&T
 """
 from django.test import TestCase
 
