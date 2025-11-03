@@ -1,6 +1,5 @@
 """
 Fichier signals.py : signaux pour automatiser l'ajout au groupe Utilisateur
-Commentaires pédagogiques pour étudiant R&T
 """
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User, Group
