@@ -1,6 +1,5 @@
 """
 Fichier admin.py : configuration de l'administration Django pour les tickets
-Commentaires pédagogiques pour étudiant R&T
 """
 from django.contrib import admin
 from .models import Ticket
