@@ -1,7 +1,5 @@
 """
 Fichier forms.py : formulaire d'inscription utilisateur
-Commentaires pédagogiques pour étudiant R&T
-Chaque champ et méthode est expliqué
 """
 from django import forms
 from django.contrib.auth.models import User
